@@ -13,6 +13,7 @@ const getUsers = (request, response) => {
       throw error
     }
     response.status(200).json(results.rows)
+    return results.rows
   })
 }
 
@@ -28,8 +29,9 @@ const getUserById = (request, response) => {
 }
 
 const createUser = (request, response) => {
-  const { name, email } = request.body
-
+  const url = new URLSearchParams(request._parsedUrl.path.slice(6))
+  const name = url.get('name')
+  const email = url.get('email')
   pool.query('INSERT INTO users (name, email) VALUES ($1, $2)', [name, email], (error, results) => {
     if (error) {
       throw error
@@ -55,9 +57,8 @@ const updateUser = (request, response) => {
 }
 
 const deleteUser = (request, response) => {
-  const id = parseInt(request.params.id)
-
-  pool.query('DELETE FROM users WHERE id = $1', [id], (error, results) => {
+  const id = response.req.params.id.slice(1)
+  pool.query(`DELETE FROM users WHERE id = $1`, [id], (error, results) => {
     if (error) {
       throw error
     }
