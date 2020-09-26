@@ -40,7 +40,7 @@ function App() {
         <label>email</label>
         <input onChange={(e) => setUserEmail(e.target.value)} type="text" id="email" name="email" required />
         <button onClick={() => addUser(newUserName, newUserEmail)}>add user</button>
-        <label>delete id</label>
+        <label>delete user by id</label>
         <input onChange={(e) => setUserId(e.target.value)} type="number" id="email" name="email" required />
         <button onClick={() => deleteUser(newUserId)}>delete user</button>
         <div>
