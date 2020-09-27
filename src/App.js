@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, memo} from 'react';
 import './App.css';
 
 const getUsers = () => fetch('http://localhost:3001/users', {method: 'GET'})
@@ -7,11 +7,7 @@ const getUsers = () => fetch('http://localhost:3001/users', {method: 'GET'})
 const createUser = (name, email) => fetch(`http://localhost:3001/users?name=${name}&email=${email}`,
 {
   method: 'POST',
-  name, email,
-  ...JSON.stringify({name, email}),
-  body: JSON.stringify({name, email})
 })
-.then(async (res) => await res.json())
 
 
 function App() {
@@ -19,10 +15,8 @@ function App() {
   const [newUserName, setUserName] = useState('')
   const [newUserEmail, setUserEmail] = useState('')
   const [newUserId, setUserId] = useState(0)
-  const addUser = (name, email) => {
-    console.log(name, email, 'nameemail', JSON.stringify({name, email}))
-    return createUser(name, email).then(() => getUsers().then(res => setUsers(res)))
-  }
+
+  const addUser = (name, email) => createUser(name, email).then(() => getUsers().then(res => setUsers(res)))
 
   const deleteUser = (id = 0) => fetch(`http://localhost:3001/users/:${id}`, {
       method: 'DELETE',
@@ -43,13 +37,19 @@ function App() {
         <label>delete user by id</label>
         <input onChange={(e) => setUserId(e.target.value)} type="number" id="email" name="email" required />
         <button onClick={() => deleteUser(newUserId)}>delete user</button>
-        <div>
-          {users.map(user => {
-            return (<div key={user.id}>name: {user.name}, id: {user.id}  email: {user.email}</div>)
-          })}
-        </div>
+        <MemoizedUsersMap users={users} length={users.length} />
       </header>
     </div>
   );
 }
 export default App;
+
+
+const UsersMap = ({users, length}) => {
+  console.log(users, 'users memo')
+  return (<div>{users.map(user => {
+    return (<div key={user.id}>name: {user.name}, id: {user.id}  email: {user.email}</div>)
+  })}</div>)
+}
+
+const MemoizedUsersMap = React.memo(UsersMap)
