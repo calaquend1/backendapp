@@ -32,7 +32,8 @@ const createUser = (request, response) => {
   const url = new URLSearchParams(request._parsedUrl.path.slice(6))
   const name = url.get('name')
   const email = url.get('email')
-  pool.query('INSERT INTO users (name, email) VALUES ($1, $2)', [name, email], (error, results) => {
+  const sign_date = url.get('sign_date')
+  pool.query('INSERT INTO users (name, email, sign_date) VALUES ($1, $2, $3)', [name, email, sign_date], (error, results) => {
     if (error) {
       throw error
     }
