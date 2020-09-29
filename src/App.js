@@ -12,13 +12,20 @@ function App() {
   const userList = useMemo(async () => {
     console.log('get userList')
     let list;
-    getUsers().then(res => {list = res})
-    return list
+    getUsers().then(res => {list = res; console.log('list ', list)})
+
+    return await list
   }, []);
 
   const addUser = (name, email, sign_date) => createUser(name, email, sign_date).then(() => getUsers().then(res => setUsers(res)))
 
-  const deleteU = (id) => deleteUser(id).then(() => getUsers().then(res => setUsers(res)))
+  const deleteU = (id) => {
+    if (users.find(item => item.id === id)){
+      console.log('delete')
+      return deleteUser(id).then(() => getUsers().then(res => setUsers(res)))
+    }
+    console.log('not delete')
+  }
 
   useEffect(() => {
     getUsers().then(res => setUsers(res))
@@ -31,8 +38,7 @@ function App() {
         <LabelAndInput name="email" onChange={setUserEmail} />
         <LabelAndInput name="date" onChange={setUserDate} type="date" />
         <button onClick={() => addUser(newUserName, newUserEmail, newUserDate)}>add user</button>
-        <label>delete user by id</label>
-        <input onChange={(e) => setUserId(e.target.value)} type="number" id="id" name="id" required />
+        <LabelAndInput name="delete user by id" onChange={setUserId} type="number" />
         <button onClick={() => deleteU(newUserId)}>delete user</button>
         <MemoizedUsersMap users={users} length={users.length} />
       </header>
@@ -41,7 +47,7 @@ function App() {
 }
 export default App;
 
-const LabelAndInput = (name, onChange, type = 'text') => {
+const LabelAndInput = ({name, onChange, type = 'text'}) => {
   return (<>
     <label>{name}</label>
     <input onChange={(e) => onChange(e.target.value)} type={type} id={name} name={name} required />
