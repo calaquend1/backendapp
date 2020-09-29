@@ -1,4 +1,4 @@
-import React, {useEffect, useState, memo} from 'react';
+import React, {useEffect, useState, memo, useMemo} from 'react';
 import './css/App.css';
 import {getUsers, createUser, deleteUser} from './functions'
 
@@ -9,6 +9,13 @@ function App() {
   const [newUserId, setUserId] = useState(0)
   const [newUserDate, setUserDate] = useState(new Date())
 
+  const userList = useMemo(async () => {
+    console.log('get userList')
+    let list;
+    getUsers().then(res => {list = res})
+    return list
+  }, []);
+
   const addUser = (name, email, sign_date) => createUser(name, email, sign_date).then(() => getUsers().then(res => setUsers(res)))
 
   const deleteU = (id) => deleteUser(id).then(() => getUsers().then(res => setUsers(res)))
@@ -16,19 +23,16 @@ function App() {
   useEffect(() => {
     getUsers().then(res => setUsers(res))
   },[])
-  
+
   return (
     <div className="App">
       <header className="App-header">
-        <label>name</label>
-        <input onChange={(e) => setUserName(e.target.value)} type="text" id="name" name="name" required />
-        <label>email</label>
-        <input onChange={(e) => setUserEmail(e.target.value)} type="text" id="email" name="email" required />
-        <label>date</label>
-        <input onChange={(e) => {setUserDate(e.target.value); console.log(e,e.target.value)}} type="date" id="date" name="date" required />
+        <LabelAndInput name="name" onChange={setUserName} />
+        <LabelAndInput name="email" onChange={setUserEmail} />
+        <LabelAndInput name="date" onChange={setUserDate} type="date" />
         <button onClick={() => addUser(newUserName, newUserEmail, newUserDate)}>add user</button>
         <label>delete user by id</label>
-        <input onChange={(e) => setUserId(e.target.value)} type="number" id="email" name="email" required />
+        <input onChange={(e) => setUserId(e.target.value)} type="number" id="id" name="id" required />
         <button onClick={() => deleteU(newUserId)}>delete user</button>
         <MemoizedUsersMap users={users} length={users.length} />
       </header>
@@ -37,6 +41,12 @@ function App() {
 }
 export default App;
 
+const LabelAndInput = (name, onChange, type = 'text') => {
+  return (<>
+    <label>{name}</label>
+    <input onChange={(e) => onChange(e.target.value)} type={type} id={name} name={name} required />
+</>)
+}
 
 const UsersMap = ({users, length}) => {
   console.log(users, 'users memo')
