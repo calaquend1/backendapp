@@ -1,6 +1,7 @@
 import React, {useEffect, useState, memo, useMemo} from 'react';
 import './css/App.css';
 import {getUsers, createUser, deleteUser} from './functions'
+import {LabelAndInput, MemoizedUsersMap} from './components'
 
 function App() {
   const [users, setUsers] = useState([])
@@ -46,19 +47,3 @@ function App() {
   );
 }
 export default App;
-
-const LabelAndInput = ({name, onChange, type = 'text'}) => {
-  return (<>
-    <label>{name}</label>
-    <input onChange={(e) => onChange(e.target.value)} type={type} id={name} name={name} required />
-</>)
-}
-
-const UsersMap = ({users, length}) => {
-  console.log(users, 'users memo')
-  return (<div>{users.map(user => {
-    return (<div key={user.id}>name: {user.name}, id: {user.id}  email: {user.email} date: {user.sign_date}</div>)
-  })}</div>)
-}
-
-const MemoizedUsersMap = React.memo(UsersMap)
