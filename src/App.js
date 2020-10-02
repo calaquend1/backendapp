@@ -14,22 +14,17 @@ function App() {
     console.log('get userList')
     let list;
     getUsers().then(res => {list = res; console.log('list ', list)})
-
     return await list
   }, []);
 
-  const addUser = (name, email, sign_date) => createUser(name, email, sign_date).then(() => getUsers().then(res => setUsers(res)))
+  const updateUsers = getUsers().then(res => setUsers(res))
 
-  const deleteU = (id) => {
-    if (users.find(item => item.id === id)){
-      console.log('delete')
-      return deleteUser(id).then(() => getUsers().then(res => setUsers(res)))
-    }
-    console.log('not delete')
-  }
+  const addUser = (name, email, sign_date) => createUser(name, email, sign_date).then(() => updateUsers())
+
+  const deleteU = (id) => (users.find(item => item.id === id) && deleteUser(id).then(() => updateUsers())
 
   useEffect(() => {
-    getUsers().then(res => setUsers(res))
+    updateUsers()
   },[])
 
   return (
