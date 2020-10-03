@@ -17,15 +17,17 @@ function App() {
     return await list
   }, []);
 
-  const updateUsers = getUsers().then(res => setUsers(res))
+  const updateUsers = () => getUsers().then(res => setUsers(res))
 
   const addUser = (name, email, sign_date) => createUser(name, email, sign_date).then(() => updateUsers())
 
-  const deleteU = (id) => (users.find(item => item.id === id) && deleteUser(id).then(() => updateUsers())
+  const deleteU = (id) => {
+    return users.find(item => item.id === id) && deleteUser(id).then(() => updateUsers())
+  }
 
   useEffect(() => {
     updateUsers()
-  },[])
+  }, [])
 
   return (
     <div className="App">
