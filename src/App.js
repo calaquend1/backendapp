@@ -11,7 +11,7 @@ function App() {
   const [newUserDate, setUserDate] = useState(new Date())
 
   const userList = useMemo(async () => {
-    console.log('get userList')
+    console.log('get userList usememo')
     let list;
     getUsers().then(res => {list = res; console.log('list ', list)})
     return await list
