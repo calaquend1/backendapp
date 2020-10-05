@@ -39,6 +39,7 @@ function App() {
         <LabelAndInput name="delete user by id" onChange={setUserId} type="number" />
         <button onClick={() => deleteU(newUserId)}>delete user</button>
         <MemoizedUsersMap users={users} length={users.length} />
+        <div>надо сделать таблицу красивой!</div>
       </header>
     </div>
   );
